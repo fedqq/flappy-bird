@@ -32,6 +32,9 @@ class FlappyBird:
         self.bottom_pipe_image = PhotoImage(file = 'resources/bottom_pipe.png')
         self.start_image = PhotoImage(file = 'resources/start_img.png')
         self.bird_image = PhotoImage(file = 'resources/start_bird.png')
+        self.icon_image = PhotoImage(file = 'resources\icon.png')
+
+        self.window.iconphoto(False, self.icon_image)
 
         self.start_menu = self.canvas.create_image(0, 0, image = self.start_image, anchor = NW, tag = "start_image")
         self.start_bird = self.canvas.create_image(0, -100, image = self.bird_image, anchor = NW, tag = "start_bird")
@@ -81,6 +84,7 @@ class FlappyBird:
         self.restartable = False
 
         self.score = 0
+        self.counter = 0
         self.pipes = []
 
         self.canvas.create_image(0, 0, anchor = NW, image = self.background_image)
@@ -97,7 +101,7 @@ class FlappyBird:
         self.score_text = self.canvas.create_text(WIDTH / 2, 100, text = "0", fill = "black", font = self.font, tag = 'label')
         self.score_text_shadow = self.canvas.create_text(WIDTH / 2 - 4, 96, text = "0", fill = "white", font = self.font, tag = 'label')
 
-        self.create_pipes()
+        self.pipes.append(Pipes(self))
         self.draw_loop()
 
     def space(self):
@@ -107,6 +111,11 @@ class FlappyBird:
             self.start()
 
     def draw_loop(self):
+        self.counter += 1
+        if self.counter % 15 == 0:
+            self.bird.change_image(self)
+        if self.counter % 125 == 0:
+            self.pipes.append(Pipes(self))
         self.bird.refresh(self)
         for pipe in self.pipes:
             pipe.move(self)
@@ -116,18 +125,9 @@ class FlappyBird:
         if not (self.dead or self.paused):
             self.draw_after = self.window.after(10, self.draw_loop)
 
-    def create_pipes(self):
-
-        self.pipes.append(Pipes(self))
-
-        if not (self.dead or self.paused):
-            self.pipes_after = self.window.after(2000, self.create_pipes)
-
     def lose_game(self):
         self.dead = True
 
-        self.window.after_cancel(self.pipes_after)
-        self.window.after_cancel(self.bird.change_after)
         self.window.after_cancel(self.draw_after)
 
         self.canvas.delete('all')
@@ -135,12 +135,12 @@ class FlappyBird:
         self.canvas.create_image(0, 0, anchor = NW, image = self.background_image)
         self.canvas.create_image(0, 0, anchor = NW, image = self.ground_image, tag = 'ground')
 
-        self.window.after(1000, self.allow_restart)
-
         self.font.configure(size = 30)
         self.canvas.create_text(WIDTH / 2, HEIGHT / 2 - 100, text = "Score: {}\nPress Space \nOr Click To Restart".format(self.score), fill = "black", font = self.font, justify = CENTER)
         self.canvas.create_text(WIDTH / 2 - 4, HEIGHT / 2 - 104, text = "Score: {}\nPress Space \nOr Click To Restart".format(self.score), fill = "white", font = self.font, justify = CENTER)
 
+        self.window.after(1000, self.allow_restart)
+        
     def pause(self):
         self.paused = not self.paused
         self.draw_loop()
@@ -161,6 +161,7 @@ class Bird:
         self.momentum = 0
 
     def change_image(self, game):
+
         if self.image == 1:
             game.canvas.itemconfig(self.object, image = self.bird_2)
             self.image = 2
@@ -170,11 +171,9 @@ class Bird:
         else:
             self.image = 1
             game.canvas.itemconfig(self.object, image = self.bird_1)
-        if not game.dead and not game.paused:
-            self.change_after = game.window.after(150, self.change_image, game)
     
     def refresh(self, game):
-        if self.momentum != 30:
+        if self.momentum != 20:
             self.momentum += 0.5
         
         if self.y_position + self.momentum > 710 or self.y_position + self.momentum < 0:
