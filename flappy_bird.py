@@ -32,7 +32,7 @@ class FlappyBird:
         self.bottom_pipe_image = PhotoImage(file = 'resources/bottom_pipe.png')
         self.start_image = PhotoImage(file = 'resources/start_img.png')
         self.bird_image = PhotoImage(file = 'resources/start_bird.png')
-        self.icon_image = PhotoImage(file = 'resources\icon.png')
+        self.icon_image = PhotoImage(file = 'resources/bird_2.png')
 
         self.window.iconphoto(False, self.icon_image)
 
@@ -152,7 +152,7 @@ class Bird:
     
     def __init__(self, game):
         self.bird_1 = PhotoImage(file = 'resources/bird_1.png')
-        self.bird_2 = PhotoImage(file = 'resources/bird_2.png')
+        self.bird_2 = game.icon_image
         self.bird_3 = PhotoImage(file = 'resources/bird_3.png')
         self.image = 1
 
