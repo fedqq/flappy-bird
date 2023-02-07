@@ -204,7 +204,7 @@ class Pipes:
         self.current = False
         self.top_pipe = game.canvas.create_image(WIDTH, 0 - self.number, image = game.top_pipe_image, anchor = NW)
         self.bottom_pipe = game.canvas.create_image(WIDTH, 0 - self.number + 600, image = game.bottom_pipe_image, anchor = NW)
-        self.taken_area = [range(0 - self.number, 500 - self.number), range(0 - self.number + 575, 0 - self.number + 1100)]
+        self.taken_area = [range(0 - self.number, 490 - self.number), range(0 - self.number + 590, 0 - self.number + 1100)]
         game.canvas.tag_raise('label')
         game.canvas.tag_raise('ground')
 
